@@ -87,7 +87,7 @@ public class Constants {
     public static final String docxExtension = ".docx";
     public static final String tempDirectory = "temp";
 
-    public static final String AUTHORITY_APP = "com.swati4star.shareFile";
+    public static final String AUTHORITY_APP = swati4star.createpdf.BuildConfig.APPLICATION_ID + ".shareFile";
 
     public static final String ACTION_SELECT_IMAGES = "android.intent.action.SELECT_IMAGES";
     public static final String ACTION_VIEW_FILES = "android.intent.action.VIEW_FILES";
