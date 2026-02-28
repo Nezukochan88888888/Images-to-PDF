@@ -24,7 +24,59 @@ public class RealPathUtil {
      * @return - actual path
      */
     public String getRealPath(Context context, Uri fileUri) {
-        return getRealPathFromURI_API19(context, fileUri);
+        String path = getRealPathFromURI_API19(context, fileUri);
+        if (path != null && new java.io.File(path).exists()) {
+            return path;
+        }
+        return getPathFromUriFallback(context, fileUri);
+    }
+
+    private String getPathFromUriFallback(Context context, Uri uri) {
+        try {
+            java.io.InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null)
+                return null;
+            String fileName = getFileNameFallback(context, uri);
+            if (fileName == null)
+                fileName = "temp_file_" + System.currentTimeMillis();
+            java.io.File tempFile = new java.io.File(context.getCacheDir(), fileName);
+            java.io.FileOutputStream outputStream = new java.io.FileOutputStream(tempFile);
+            byte[] buffers = new byte[1024 * 4];
+            int read;
+            while ((read = inputStream.read(buffers)) != -1) {
+                outputStream.write(buffers, 0, read);
+            }
+            inputStream.close();
+            outputStream.close();
+            return tempFile.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getFileNameFallback(Context context, Uri uri) {
+        String result = null;
+        if ("content".equals(uri.getScheme())) {
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int idx = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                    if (idx != -1) {
+                        result = cursor.getString(idx);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (result == null && uri.getPath() != null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
     /**
@@ -71,7 +123,8 @@ public class RealPathUtil {
      *
      * @param context       The context
      * @param uri           The uri to query
-     * @param hasSubFolders The flag that indicates if the file is in the root or in a subfolder
+     * @param hasSubFolders The flag that indicates if the file is in the root or in
+     *                      a subfolder
      * @return The absolute file path
      */
     private String getDownloadsDocumentPath(Context context, Uri uri, boolean hasSubFolders) {
@@ -109,13 +162,15 @@ public class RealPathUtil {
      * Get all the subfolders from an Uri.
      *
      * @param uri The uri
-     * @return A string containing all the subfolders that point to the final file path
+     * @return A string containing all the subfolders that point to the final file
+     *         path
      */
     private String getSubFolders(Uri uri) {
         String replaceChars = String.valueOf(uri).replace("%2F", "/")
                 .replace("%20", " ").replace("%3A", ":");
         // searches for "Download" to get the directory path
-        // for example, if the file is inside a folder "test" in the Download folder, this method
+        // for example, if the file is inside a folder "test" in the Download folder,
+        // this method
         // returns "test/"
         String[] components = replaceChars.split("/");
         String sub5 = components[components.length - 2];
@@ -144,7 +199,7 @@ public class RealPathUtil {
      * @return The file path
      */
     private String getFilePath(Context context, Uri uri) {
-        final String[] projection = {MediaStore.Files.FileColumns.DISPLAY_NAME};
+        final String[] projection = { MediaStore.Files.FileColumns.DISPLAY_NAME };
         try (Cursor cursor = context.getContentResolver().query(uri, projection, null, null,
                 null)) {
             if (cursor != null && cursor.moveToFirst()) {
@@ -166,7 +221,7 @@ public class RealPathUtil {
      * @return The value of the _data column, which is typically a file path.
      */
     private String getDataColumn(Context context, Uri uri, String selection,
-                                 String[] selectionArgs) {
+            String[] selectionArgs) {
 
         final String column = "_data";
         final String[] projection = {

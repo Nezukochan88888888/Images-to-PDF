@@ -18,7 +18,8 @@ import swati4star.createpdf.interfaces.GenericCallback;
 
 /**
  * !! IMPORTANT !!
- * permission arrays are defined in Constants.java file. we have two types of permissions:
+ * permission arrays are defined in Constants.java file. we have two types of
+ * permissions:
  * READ_WRITE_PERMISSIONS and READ_WRITE_CAMERA_PERMISSIONS
  * use these constants in project whenever required.
  */
@@ -29,8 +30,10 @@ public class PermissionsUtils {
     }
 
     /**
-     * checkRuntimePermissions takes in an Object instance(can be of type Activity or Fragment),
-     * an array of permission and checks for if all the permissions are granted or not
+     * checkRuntimePermissions takes in an Object instance(can be of type Activity
+     * or Fragment),
+     * an array of permission and checks for if all the permissions are granted or
+     * not
      *
      * @param context     can be of type Activity or Fragment
      * @param permissions string array of permissions
@@ -39,9 +42,14 @@ public class PermissionsUtils {
     public boolean checkRuntimePermissions(Object context, String[] permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (String permission : permissions) {
-                if ((ContextCompat.checkSelfPermission(retrieveContext(context),
-                        permission)
-                        != PackageManager.PERMISSION_GRANTED)) {
+                if ((permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                        permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) &&
+                        Build.VERSION.SDK_INT >= 30) {
+                    if (!Environment.isExternalStorageManager()) {
+                        return false;
+                    }
+                } else if ((ContextCompat.checkSelfPermission(retrieveContext(context),
+                        permission) != PackageManager.PERMISSION_GRANTED)) {
                     return false;
                 }
             }
@@ -50,7 +58,8 @@ public class PermissionsUtils {
     }
 
     /**
-     * requestRuntimePermissions takes in an Object instance(can be of type Activity or Fragment),
+     * requestRuntimePermissions takes in an Object instance(can be of type Activity
+     * or Fragment),
      * a String array of permissions and
      * a permission request code and requests for the permission
      *
@@ -59,12 +68,36 @@ public class PermissionsUtils {
      * @param requestCode permission request code
      */
     public void requestRuntimePermissions(Object context, String[] permissions,
-                                          int requestCode) {
-        if (context instanceof Activity) {
-            ActivityCompat.requestPermissions((AppCompatActivity) context,
-                    permissions, requestCode);
-        } else if (context instanceof Fragment) {
-            ((Fragment) context).requestPermissions(permissions, requestCode);
+            int requestCode) {
+        boolean hasStoragePermission = false;
+        for (String p : permissions) {
+            if (p.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    || p.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                hasStoragePermission = true;
+                break;
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= 30 && hasStoragePermission && !Environment.isExternalStorageManager()) {
+            Context ctx = retrieveContext(context);
+            Toast.makeText(ctx, "Please grant All Files Access in Settings", Toast.LENGTH_LONG).show();
+            try {
+                android.content.Intent intent = new android.content.Intent(
+                        android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.setData(android.net.Uri.parse("package:" + ctx.getPackageName()));
+                ctx.startActivity(intent);
+            } catch (Exception e) {
+                android.content.Intent intent = new android.content.Intent(
+                        android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                ctx.startActivity(intent);
+            }
+        } else {
+            if (context instanceof Activity) {
+                ActivityCompat.requestPermissions((AppCompatActivity) context,
+                        permissions, requestCode);
+            } else if (context instanceof Fragment) {
+                ((Fragment) context).requestPermissions(permissions, requestCode);
+            }
         }
     }
 
@@ -83,7 +116,8 @@ public class PermissionsUtils {
     }
 
     /**
-     * Handle a RequestPermissionResult by checking if the first permission is granted
+     * Handle a RequestPermissionResult by checking if the first permission is
+     * granted
      * and executing a Runnable when permission is granted
      *
      * @param grantResults    the GrantResults Array
@@ -92,7 +126,7 @@ public class PermissionsUtils {
      * @param whenSuccessful  the Runnable to call when permission is granted
      */
     public void handleRequestPermissionsResult(Activity context, @NonNull int[] grantResults,
-                                               int requestCode, int expectedRequest, @NonNull Runnable whenSuccessful) {
+            int requestCode, int expectedRequest, @NonNull Runnable whenSuccessful) {
 
         if (requestCode == expectedRequest && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -117,13 +151,15 @@ public class PermissionsUtils {
                 callback.proceed();
             } else {
                 Toast.makeText(context, "Please grant storage permission", Toast.LENGTH_SHORT).show();
+                requestRuntimePermissions(context, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
             }
         } else {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 callback.proceed();
             } else {
                 Toast.makeText(context, "Please grant storage permission", Toast.LENGTH_SHORT).show();
+                requestRuntimePermissions(context, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
             }
         }
     }
@@ -132,8 +168,8 @@ public class PermissionsUtils {
         if (Build.VERSION.SDK_INT >= 30) {
             return Environment.isExternalStorageManager();
         } else {
-            return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_GRANTED;
+            return ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
     }
 }
