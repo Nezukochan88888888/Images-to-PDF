@@ -2,6 +2,7 @@ package swati4star.createpdf.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -15,20 +16,29 @@ import java.io.InputStream;
 
 public class DocFileReader extends FileReader {
 
+    private static final String TAG = "DocFileReader";
+
     public DocFileReader(Context context) {
         super(context);
     }
 
     @Override
-    protected void createDocumentFromStream(
+    protected boolean createDocumentFromStream(
             Uri uri, Document document, Font myfont, InputStream inputStream) throws Exception {
         HWPFDocument doc = new HWPFDocument(inputStream);
         WordExtractor extractor = new WordExtractor(doc);
-        String fileData = extractor.getText();
+        String[] paragraphs = extractor.getParagraphText();
+        boolean hasContent = false;
 
-        Paragraph documentParagraph = new Paragraph(fileData + "\n", myfont);
-        documentParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
-        document.add(documentParagraph);
+        for (String paragraphTerm : paragraphs) {
+            if (paragraphTerm != null && !paragraphTerm.trim().isEmpty()) {
+                hasContent = true;
+                Paragraph documentParagraph = new Paragraph(paragraphTerm, myfont);
+                documentParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                document.add(documentParagraph);
+            }
+        }
+        return hasContent;
     }
 
 }

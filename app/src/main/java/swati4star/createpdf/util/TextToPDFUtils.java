@@ -19,7 +19,6 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import swati4star.createpdf.R;
 import swati4star.createpdf.database.DatabaseHelper;
@@ -49,7 +48,7 @@ public class TextToPDFUtils {
      * @param fileExtension     file extension represented as string
      */
     public void createPdfFromTextFile(TextToPDFOptions mTextToPDFOptions, String fileExtension)
-            throws DocumentException, IOException {
+            throws Exception {
 
         String masterpwd = mSharedPreferences.getString(MASTER_PWD_STRING, appName);
 
@@ -84,7 +83,7 @@ public class TextToPDFUtils {
     }
 
     private void addContentToDocument(TextToPDFOptions mTextToPDFOptions, String fileExtension,
-                                      Document document, Font myfont) throws DocumentException {
+            Document document, Font myfont) throws Exception {
         if (fileExtension == null)
             throw new DocumentException();
 
@@ -110,7 +109,6 @@ public class TextToPDFUtils {
         return new BaseColor(
                 Color.red(color),
                 Color.green(color),
-                Color.blue(color)
-        );
+                Color.blue(color));
     }
 }

@@ -150,8 +150,20 @@ public class FileUtils {
             StringUtils.getInstance().showSnackbar(mContext, R.string.error_path_not_found);
             return;
         }
-        openFileInternal(path, fileType == FileType.e_PDF ?
-                mContext.getString(R.string.pdf_type) : mContext.getString(R.string.txt_type));
+        String dataType;
+        switch (fileType) {
+            case e_PDF:
+                dataType = mContext.getString(R.string.pdf_type);
+                break;
+            case e_WORD:
+                dataType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                break;
+            case e_TXT:
+            default:
+                dataType = mContext.getString(R.string.txt_type);
+                break;
+        }
+        openFileInternal(path, dataType);
     }
 
     /**
@@ -210,6 +222,7 @@ public class FileUtils {
 
     /***
      * Check if file already exists in pdf_dir
+     * 
      * @param mFileName - Name of the file
      * @return true if file exists else false
      */
@@ -277,13 +290,15 @@ public class FileUtils {
      */
     public String stripExtension(String fileNameWithExt) {
         // Handle null case specially.
-        if (fileNameWithExt == null) return null;
+        if (fileNameWithExt == null)
+            return null;
 
         // Get position of last '.'.
         int pos = fileNameWithExt.lastIndexOf(".");
 
         // If there wasn't any '.' just return the string as is.
-        if (pos == -1) return fileNameWithExt;
+        if (pos == -1)
+            return fileNameWithExt;
 
         // Otherwise return the string, up to the dot.
         return fileNameWithExt.substring(0, pos);
@@ -391,8 +406,7 @@ public class FileUtils {
                 } else {
                     MaterialDialog.Builder builder2 = DialogUtils.getInstance().createOverwriteDialog(mContext);
                     builder2.onPositive((dialog2, which) -> saveMethod.accept(filename))
-                            .onNegative((dialog1, which) ->
-                                    openSaveDialog(preFillName, ext, saveMethod)).show();
+                            .onNegative((dialog1, which) -> openSaveDialog(preFillName, ext, saveMethod)).show();
                 }
             }
         }).show();
@@ -400,6 +414,7 @@ public class FileUtils {
 
     public enum FileType {
         e_PDF,
-        e_TXT
+        e_TXT,
+        e_WORD
     }
 }

@@ -35,12 +35,10 @@ import androidx.fragment.app.Fragment;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
@@ -73,7 +71,7 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         mBinding = FragmentQrcodeBarcodeBinding.inflate(inflater, container, false);
         View rootview = mBinding.getRoot();
 
@@ -155,10 +153,11 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
      */
     private void openScanner(Collection<String> scannerType, int promptId) {
         IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
-        // use forSupportFragment or forFragment method to use fragments instead of activity
+        // use forSupportFragment or forFragment method to use fragments instead of
+        // activity
         integrator.setDesiredBarcodeFormats(scannerType);
         integrator.setPrompt(mActivity.getString(promptId));
-        integrator.setCameraId(0);  // Use a specific camera of the device
+        integrator.setCameraId(0); // Use a specific camera of the device
         integrator.initiateScan();
     }
 
@@ -186,13 +185,14 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
             TextToPDFUtils fileUtil = new TextToPDFUtils(mActivity);
             int fontSize = mSharedPreferences.getInt(Constants.DEFAULT_FONT_SIZE_TEXT, Constants.DEFAULT_FONT_SIZE);
             fileUtil.createPdfFromTextFile(new TextToPDFOptions(mFilename, PageSizeUtils.mPageSize, false,
-                            "", uri, fontSize, mFontFamily, mFontColor, DEFAULT_PAGE_COLOR),
+                    "", uri, fontSize, mFontFamily, mFontColor, DEFAULT_PAGE_COLOR),
                     Constants.textExtension);
             final String finalMPath = mPath;
             StringUtils.getInstance().getSnackbarwithAction(mActivity, R.string.snackbar_pdfCreated)
                     .setAction(R.string.snackbar_viewAction,
-                            v -> mFileUtils.openFile(finalMPath, FileUtils.FileType.e_PDF)).show();
-        } catch (DocumentException | IOException e) {
+                            v -> mFileUtils.openFile(finalMPath, FileUtils.FileType.e_PDF))
+                    .show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -235,7 +235,8 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
         new DatabaseHelper(mActivity).insertRecord(path, mActivity.getString(R.string.created));
         StringUtils.getInstance().getSnackbarwithAction(mActivity, R.string.snackbar_pdfCreated)
                 .setAction(R.string.snackbar_viewAction,
-                        v -> mFileUtils.openFile(mPath, FileUtils.FileType.e_PDF)).show();
+                        v -> mFileUtils.openFile(mPath, FileUtils.FileType.e_PDF))
+                .show();
         mPath = path;
         resetValues();
     }
@@ -245,15 +246,16 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
      ***/
 
     private boolean isCameraPermissionGranted() {
-        return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestCameraPermissionForQrCodeScan() {
-        requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_FOR_QR_CODE);
+        requestPermissions(new String[] { Manifest.permission.CAMERA }, REQUEST_CODE_FOR_QR_CODE);
     }
 
     private void requestCameraPermissionForBarCodeScan() {
-        requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_FOR_BARCODE);
+        requestPermissions(new String[] { Manifest.permission.CAMERA }, REQUEST_CODE_FOR_BARCODE);
     }
 
     private void getRuntimePermissions() {
@@ -262,12 +264,13 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
                 REQUEST_CODE_FOR_WRITE_PERMISSION);
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if ((requestCode == REQUEST_CODE_FOR_QR_CODE || requestCode == REQUEST_CODE_FOR_BARCODE || requestCode == REQUEST_CODE_FOR_WRITE_PERMISSION) && grantResults.length > 0) {
+        if ((requestCode == REQUEST_CODE_FOR_QR_CODE || requestCode == REQUEST_CODE_FOR_BARCODE
+                || requestCode == REQUEST_CODE_FOR_WRITE_PERMISSION) && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (requestCode == REQUEST_CODE_FOR_QR_CODE) {
                     if (PermissionsUtils.getInstance().checkRuntimePermissions(this, WRITE_PERMISSIONS)) {
@@ -323,7 +326,8 @@ public class QrBarcodeScanFragment extends Fragment implements View.OnClickListe
         } else if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
             new AlertDialog.Builder(getContext())
                     .setTitle("Permission Denied")
-                    .setMessage("You have chosen to never ask the permission again, but " + permissionType + " permission is needed to scan " + scanType)
+                    .setMessage("You have chosen to never ask the permission again, but " + permissionType
+                            + " permission is needed to scan " + scanType)
                     .setPositiveButton("Enable from settings", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);

@@ -19,17 +19,21 @@ public class TextFileReader extends FileReader {
     }
 
     @Override
-    protected void createDocumentFromStream(
+    protected boolean createDocumentFromStream(
             Uri uri, Document document, Font myfont, InputStream inputStream) throws Exception {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
+        boolean hasContent = false;
         while ((line = reader.readLine()) != null) {
-            System.out.println("line = " + line);
-            Paragraph para = new Paragraph(line + "\n", myfont);
-            para.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(para);
+            if (!line.trim().isEmpty()) {
+                hasContent = true;
+                Paragraph para = new Paragraph(line + "\n", myfont);
+                para.setAlignment(Element.ALIGN_JUSTIFIED);
+                document.add(para);
+            }
         }
         reader.close();
+        return hasContent;
     }
 }

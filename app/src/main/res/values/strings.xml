@@ -283,6 +283,18 @@
     <string name="converting_file_message">Converting your files to PDF.</string>
     <string name="select_text_file">Select Text File</string>
     <string name="install_file_manager">Please install a File Manager</string>
+    <string name="select_word_file">Select Word File</string>
+    <string name="docx_ext" translatable="false">.docx</string>
+    <string name="pdf_to_docx">PDF to DOCX</string>
+    <string name="create_docx">Create DOCX</string>
+    <string name="creating_docx">Creating Word Document</string>
+    <string name="snackbar_docxCreated">Word document created!</string>
+    <string name="error_pdf_to_docx">Sorry, document was not created. Please try again</string>
+
+    <string name="doc_ext" translatable="false">.doc</string>
+    <string name="word_to_pdf">Word to PDF</string>
+    <string name="error_word_to_pdf">Sorry, PDF was not created. Please try again</string>
+    <string name="error_selecting_file">Unable to select file. Please try again.</string>
 
     <!-- Text to PDF   -->
     <string name="text_to_pdf">Text To PDF</string>

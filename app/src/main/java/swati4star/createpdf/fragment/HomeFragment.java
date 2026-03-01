@@ -50,13 +50,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
         View rootView = mBinding.getRoot();
         mFragmentPositionMap = CommonCodeUtils.getInstance().fillNavigationItemsMap(true);
 
         mBinding.imagesToPdf.setOnClickListener(this);
         mBinding.qrBarcodeToPdf.setOnClickListener(this);
+        mBinding.wordToPdf.setOnClickListener(this);
         mBinding.textToPdf.setOnClickListener(this);
         mBinding.viewFiles.setOnClickListener(this);
         mBinding.viewHistory.setOnClickListener(this);
@@ -77,6 +78,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mBinding.zipToPdf.setOnClickListener(this);
         mBinding.excelToPdf.setOnClickListener(this);
         mBinding.extractText.setOnClickListener(this);
+        mBinding.pdfToDocx.setOnClickListener(this);
         mBinding.addText.setOnClickListener(this);
 
         mAdapter = new RecentListAdapter(this);
@@ -223,6 +225,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             case R.id.extract_text:
                 fragment = new ExtractTextFragment();
                 break;
+            case R.id.nav_pdf_to_docx:
+            case R.id.pdf_to_docx:
+                fragment = new PdfToDocxFragment();
+                break;
+            case R.id.nav_word_to_pdf:
+            case R.id.word_to_pdf:
+                fragment = new WordToPdfFragment();
+                break;
             case R.id.add_text:
                 fragment = new AddTextFragment();
                 break;
@@ -235,7 +245,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Highligh navigation drawer item

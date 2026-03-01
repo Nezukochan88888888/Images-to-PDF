@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.app_name, R.string.app_name);
 
-        //Replaced setDrawerListener with addDrawerListener because it was deprecated.
+        // Replaced setDrawerListener with addDrawerListener because it was deprecated.
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -278,34 +278,27 @@ public class MainActivity extends AppCompatActivity
                                 Uri.fromParts(
                                         "package",
                                         MainActivity.this.getPackageName(),
-                                        null)
-                        )
-        );
+                                        null)));
     }
 
     private void openOSSettingsForPermissionRequest_BelowAPI30() {
         mPermissionFromSettingLauncher.launch(
                 new Intent()
                         .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        .setData(Uri.fromParts("package", MainActivity.this.getPackageName(), null))
-        );
+                        .setData(Uri.fromParts("package", MainActivity.this.getPackageName(), null)));
     }
 
     private void requestStoragePermission_API30AndAbove(boolean giveExplanation) {
         DialogUtils.showChoiceDialog(
                 this,
-                giveExplanation ?
-                        R.string.manage_storage_permission_denied_alert_dialog_title :
-                        R.string.manage_storage_permission_alert_dialog_title,
-                giveExplanation ?
-                        R.string.manage_storage_permission_denied_alert_dialog_message :
-                        DialogUtils.EMPTY_STRING,
-                giveExplanation ?
-                        R.string.manage_storage_permission_denied_alert_dialog_positive_button_label :
-                        R.string.manage_storage_permission_alert_dialog_positive_button_label,
-                giveExplanation ?
-                        R.string.manage_storage_permission_denied_alert_dialog_negative_button_label :
-                        R.string.manage_storage_permission_alert_dialog_negative_button_label,
+                giveExplanation ? R.string.manage_storage_permission_denied_alert_dialog_title
+                        : R.string.manage_storage_permission_alert_dialog_title,
+                giveExplanation ? R.string.manage_storage_permission_denied_alert_dialog_message
+                        : DialogUtils.EMPTY_STRING,
+                giveExplanation ? R.string.manage_storage_permission_denied_alert_dialog_positive_button_label
+                        : R.string.manage_storage_permission_alert_dialog_positive_button_label,
+                giveExplanation ? R.string.manage_storage_permission_denied_alert_dialog_negative_button_label
+                        : R.string.manage_storage_permission_alert_dialog_negative_button_label,
                 false,
                 new DialogCallbacks() {
                     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -320,9 +313,11 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onNegativeButtonClick() {
                         // On I'm sure button clicked
-                        if (giveExplanation) finish();
-                            // On Deny button clicked
-                        else requestStoragePermission_API30AndAbove(true);
+                        if (giveExplanation)
+                            finish();
+                        // On Deny button clicked
+                        else
+                            requestStoragePermission_API30AndAbove(true);
                     }
 
                     @Override
@@ -337,18 +332,20 @@ public class MainActivity extends AppCompatActivity
                 MainActivity.this,
                 R.string.manage_storage_permission_denied_alert_dialog_title,
                 R.string.manage_storage_permission_denied_alert_dialog_message,
-                neverAskAgainChecked ?
-                        R.string.manage_storage_permission_denied_with_never_ask_alert_dialog_positive_button_label :
-                        R.string.manage_storage_permission_denied_alert_dialog_positive_button_label,
+                neverAskAgainChecked
+                        ? R.string.manage_storage_permission_denied_with_never_ask_alert_dialog_positive_button_label
+                        : R.string.manage_storage_permission_denied_alert_dialog_positive_button_label,
                 R.string.manage_storage_permission_denied_alert_dialog_negative_button_label,
                 false,
                 new DialogCallbacks() {
                     @Override
                     public void onPositiveButtonClick() {
                         // On Allow from setting button clicked
-                        if (neverAskAgainChecked) openOSSettingsForPermissionRequest_BelowAPI30();
-                            // On Re-try button clicked
-                        else mPermissionLauncher.launch(WRITE_STORAGE_PERMISSION);
+                        if (neverAskAgainChecked)
+                            openOSSettingsForPermissionRequest_BelowAPI30();
+                        // On Re-try button clicked
+                        else
+                            mPermissionLauncher.launch(WRITE_STORAGE_PERMISSION);
                     }
 
                     @Override
@@ -364,16 +361,16 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private final ActivityResultLauncher<String> mPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
-                    isGranted -> {
-                        if (!isGranted) explainPermissionRequestAfterDenial_BelowAPI30();
-                    });
-
-    private final ActivityResultLauncher<Intent> mPermissionFromSettingLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+    private final ActivityResultLauncher<String> mPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if (!isGranted)
+                    explainPermissionRequestAfterDenial_BelowAPI30();
             });
 
+    private final ActivityResultLauncher<Intent> mPermissionFromSettingLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+            });
 
     /**
      * puts image uri's in a bundle and start ImageToPdf fragment with this bundle
@@ -406,6 +403,8 @@ public class MainActivity extends AppCompatActivity
         mFragmentSelectedMap.append(R.id.nav_about, R.string.about_us);
         mFragmentSelectedMap.append(R.id.nav_settings, R.string.settings);
         mFragmentSelectedMap.append(R.id.nav_extract_images, R.string.extract_images);
+        mFragmentSelectedMap.append(R.id.nav_text_extract, R.string.extract_text);
+        mFragmentSelectedMap.append(R.id.nav_pdf_to_docx, R.string.pdf_to_docx);
         mFragmentSelectedMap.append(R.id.nav_pdf_to_images, R.string.pdf_to_images);
         mFragmentSelectedMap.append(R.id.nav_remove_pages, R.string.remove_pages);
         mFragmentSelectedMap.append(R.id.nav_rearrange_pages, R.string.reorder_pages);
@@ -417,6 +416,7 @@ public class MainActivity extends AppCompatActivity
         mFragmentSelectedMap.append(R.id.nav_zip_to_pdf, R.string.zip_to_pdf);
         mFragmentSelectedMap.append(R.id.nav_rotate_pages, R.string.rotate_pages);
         mFragmentSelectedMap.append(R.id.nav_excel_to_pdf, R.string.excel_to_pdf);
+        mFragmentSelectedMap.append(R.id.nav_word_to_pdf, R.string.word_to_pdf);
         mFragmentSelectedMap.append(R.id.nav_faq, R.string.faqs);
     }
 
@@ -460,7 +460,8 @@ public class MainActivity extends AppCompatActivity
                 break;
             case THEME_SYSTEM:
             default:
-                if ((this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+                if ((this.getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
                     toolbarBackgroundLayout.setBackgroundResource(R.color.colorBlackAltLight);
                     content.setCardBackgroundColor(getResources().getColor(R.color.colorBlackAlt));
                     mNavigationView.setBackgroundResource(R.color.colorBlackAlt);

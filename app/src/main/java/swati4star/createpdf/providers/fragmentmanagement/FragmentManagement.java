@@ -54,6 +54,8 @@ import swati4star.createpdf.fragment.SplitFilesFragment;
 import swati4star.createpdf.fragment.ViewFilesFragment;
 import swati4star.createpdf.fragment.ZipToPdfFragment;
 import swati4star.createpdf.fragment.texttopdf.TextToPdfFragment;
+import swati4star.createpdf.fragment.PdfToDocxFragment;
+import swati4star.createpdf.fragment.WordToPdfFragment;
 import swati4star.createpdf.util.FeedbackUtils;
 import swati4star.createpdf.util.FragmentUtils;
 
@@ -250,6 +252,12 @@ public class FragmentManagement implements IFragmentManagement {
                 break;
             case R.id.nav_text_extract:
                 fragment = new ExtractTextFragment();
+                break;
+            case R.id.nav_pdf_to_docx:
+                fragment = new PdfToDocxFragment();
+                break;
+            case R.id.nav_word_to_pdf:
+                fragment = new WordToPdfFragment();
                 break;
             case R.id.nav_faq:
                 fragment = new FAQFragment();

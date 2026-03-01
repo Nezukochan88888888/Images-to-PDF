@@ -61,6 +61,7 @@ public class Constants {
     public static final String EXTRACT_TEXT_KEY = "Extract Text";
     public static final String EXTRACT_IMAGES_KEY = "Extract Images";
     public static final String PDF_TO_IMAGES_KEY = "PDF to Images";
+    public static final String PDF_TO_DOCX_KEY = "PDF to DOCX";
     public static final String EXCEL_TO_PDF_KEY = "Excel to PDF";
     public static final String ZIP_TO_PDF_KEY = "ZIP to PDF";
 
@@ -111,7 +112,6 @@ public class Constants {
     public static final int REQUEST_CODE_FOR_WRITE_PERMISSION = 4;
     public static final int REQUEST_CODE_FOR_READ_PERMISSION = 5;
 
-
     public static final String[] WRITE_PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
@@ -124,6 +124,6 @@ public class Constants {
     public static final int REMOVE_PASSWORD = 22;
     public static final int ADD_WATERMARK = 23;
 
-    //Preference key name.
+    // Preference key name.
     public static final String RECENT_PREF = "Recent";
 }

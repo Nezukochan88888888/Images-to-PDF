@@ -107,6 +107,14 @@
                         android:icon="@drawable/ic_text_format_black_24dp"
                         android:title="@string/extract_text" />
                     <item
+                        android:id="@+id/nav_pdf_to_docx"
+                        android:icon="@drawable/ic_insert_drive_file_black_24dp"
+                        android:title="@string/pdf_to_docx" />
+                    <item
+                        android:id="@+id/nav_word_to_pdf"
+                        android:icon="@drawable/ic_baseline_picture_as_pdf_24"
+                        android:title="@string/word_to_pdf" />
+                    <item
                         android:id="@+id/nav_remove_pages"
                         android:icon="@drawable/ic_remove_circle_black_24dp"
                         android:title="@string/remove_pages" />
